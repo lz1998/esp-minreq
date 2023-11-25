@@ -8,6 +8,7 @@ esp32-minreq = { git = "https://github.com/lz1998/esp32-minreq.git", branch = "m
 ```rust
     use serde::{Deserialize, Serialize};
     #[derive(Serialize, Deserialize, Default, Debug)]
+    #[serde(default)]
     struct Response {
         pub ip: String,
         pub ip_decimal: i64,
@@ -22,7 +23,6 @@ esp32-minreq = { git = "https://github.com/lz1998/esp32-minreq.git", branch = "m
         pub time_zone: String,
         pub asn: String,
         pub asn_org: String,
-        pub user_agent: UserAgent,
     }
     let resp: Response = esp32_minreq::get("https://ifconfig.co/json")
         .send::<esp32_minreq::tcp::TcpStream>()
