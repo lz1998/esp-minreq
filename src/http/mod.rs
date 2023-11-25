@@ -26,48 +26,7 @@
 //!
 //! Below is the list of all available features.
 //!
-//! ## `https` or `https-rustls`
-//!
-//! This feature uses the (very good)
-//! [`rustls`](https://crates.io/crates/rustls) crate to secure the
-//! connection when needed. Note that if this feature is not enabled
-//! (and it is not by default), requests to urls that start with
-//! `https://` will fail and return a
-//! [`HttpsFeatureNotEnabled`](enum.Error.html#variant.HttpsFeatureNotEnabled)
-//! error. `https` was the name of this feature until the other https
-//! feature variants were added, and is now an alias for
-//! `https-rustls`.
-//!
-//! ## `https-rustls-probe`
-//!
-//! Like `https-rustls`, but also includes the
-//! [`rustls-native-certs`](https://crates.io/crates/rustls-native-certs)
-//! crate to auto-detect root certificates installed in common
-//! locations.
-//!
-//! ## `https-native`
-//!
-//! Like `https`, but uses
-//! [`tls-native`](https://crates.io/crates/native-tls) instead of
-//! `rustls`.
-//!
-//! ## `https-bundled`
-//!
-//! Like `https`, but uses a statically linked copy of the OpenSSL
-//! library (provided by
-//! [`openssl-sys`](https://crates.io/crates/openssl-sys) with
-//! features = "vendored"). This feature on its own doesn't provide
-//! any detection of where your root certificates are installed. They
-//! can be specified via the environment variables `SSL_CERT_FILE` or
-//! `SSL_CERT_DIR`.
-//!
-//! ## `https-bundled-probe`
-//!
-//! Like `https-bundled`, but also includes the
-//! [`openssl-probe`](https://crates.io/crates/openssl-probe) crate to
-//! auto-detect root certificates installed in common locations.
-//!
-//! ## `json-using-serde`
+//! ## `json`
 //!
 //! This feature allows both serialize and deserialize JSON payload
 //! using the [`serde_json`](https://crates.io/crates/serde_json)
@@ -188,9 +147,9 @@
 
 #![deny(missing_docs)]
 
-#[cfg(feature = "json-using-serde")]
+#[cfg(feature = "json")]
 extern crate serde;
-#[cfg(feature = "json-using-serde")]
+#[cfg(feature = "json")]
 extern crate serde_json;
 
 mod connection;

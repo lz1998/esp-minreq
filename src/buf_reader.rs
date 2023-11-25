@@ -4,9 +4,9 @@ use embedded_io_async::{BufRead, ErrorType, Read};
 
 /// The `BufReader` struct adds buffering to any reader.
 ///
-/// It can be excessively inefficient to work directly with a [`AsyncRead`]
+/// It can be excessively inefficient to work directly with a [`Read`]
 /// instance. A `BufReader` performs large, infrequent reads on the underlying
-/// [`AsyncRead`] and maintains an in-memory buffer of the results.
+/// [`Read`] and maintains an in-memory buffer of the results.
 ///
 /// `BufReader` can improve the speed of programs that make *small* and
 /// *repeated* read calls to the same file or network socket. It does not
@@ -18,7 +18,7 @@ use embedded_io_async::{BufRead, ErrorType, Read};
 /// discarded. Creating multiple instances of a `BufReader` on the same
 /// stream can cause data loss.
 ///
-/// [`AsyncRead`]: futures_io::AsyncRead
+/// [`Read`]: embedded_io_async::Read
 ///
 // TODO: Examples
 pub struct BufReader<R> {

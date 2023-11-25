@@ -157,17 +157,35 @@ impl Response {
     /// In case compiler cannot figure out return type you might need to declare it explicitly:
     ///
     /// ```no_run
-    /// use serde_json::Value;
+    /// use serde::{Deserialize, Serialize};
+    ///
+    /// #[derive(Serialize, Deserialize, Default)]
+    /// #[serde(default)]
+    /// struct Response {
+    ///     pub ip: String,
+    ///     pub ip_decimal: i64,
+    ///     pub country: String,
+    ///     pub country_iso: String,
+    ///     pub country_eu: bool,
+    ///     pub region_name: String,
+    ///     pub region_code: String,
+    ///     pub city: String,
+    ///     pub latitude: f64,
+    ///     pub longitude: f64,
+    ///     pub time_zone: String,
+    ///     pub asn: String,
+    ///     pub asn_org: String,
+    /// }
     ///
     /// # async fn main() -> Result<(), esp32_minreq::Error> {
-    /// # let url_to_json_resource = "http://example.org/resource.json";
+    /// # let url_to_json_resource = "https://ifconfig.co/json";
     /// // Value could be any type that implements Deserialize!
-    /// let user = esp32_minreq::get(url_to_json_resource).send().await?.json::<Value>()?;
-    /// println!("User name is '{}'", user["name"]);
+    /// let response = esp32_minreq::get(url_to_json_resource).send().await?.json::<Response>()?;
+    /// println!("User ip is '{}'", response.ip);
     /// # Ok(())
     /// # }
     /// ```
-    #[cfg(feature = "json-using-serde")]
+    #[cfg(feature = "json")]
     pub fn json<'a, T>(&'a self) -> Result<T, Error>
     where
         T: serde::de::Deserialize<'a>,

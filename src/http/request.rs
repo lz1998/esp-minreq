@@ -164,8 +164,9 @@ impl Request {
     /// [`SerdeJsonError`](enum.Error.html#variant.SerdeJsonError) if
     /// Serde runs into a problem when converting `body` into a
     /// string.
-    #[cfg(feature = "json-using-serde")]
+    #[cfg(feature = "json")]
     pub fn with_json<T: serde::ser::Serialize>(mut self, body: &T) -> Result<Request, Error> {
+        use crate::alloc::string::ToString;
         self.headers.insert(
             "Content-Type".to_string(),
             "application/json; charset=UTF-8".to_string(),

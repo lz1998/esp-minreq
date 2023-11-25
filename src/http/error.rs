@@ -6,7 +6,7 @@ use esp_idf_hal::io::EspIOError;
 #[derive(Debug)]
 // TODO: Make non-exhaustive for 3.0?
 pub enum Error {
-    #[cfg(feature = "json-using-serde")]
+    #[cfg(feature = "json")]
     /// Ran into a Serde error.
     SerdeJsonError(serde_json::Error),
     /// The response body contains invalid UTF-8, so the `as_str()`
@@ -84,7 +84,7 @@ impl Display for Error {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         use Error::*;
         match self {
-            #[cfg(feature = "json-using-serde")]
+            #[cfg(feature = "json")]
             SerdeJsonError(err) => write!(f, "{}", err),
             IoError(err) => write!(f, "{}", err),
             InvalidUtf8InBody(err) => write!(f, "{}", err),
@@ -115,21 +115,6 @@ impl Display for Error {
         }
     }
 }
-
-// impl core::error::Error for Error {
-//     fn source(&self) -> Option<&(dyn core::error::Error + 'static)> {
-//         use Error::*;
-//         match self {
-//             #[cfg(feature = "json-using-serde")]
-//             SerdeJsonError(err) => Some(err),
-//             IoError(err) => Some(err),
-//             InvalidUtf8InBody(err) => Some(err),
-//             #[cfg(feature = "rustls")]
-//             RustlsCreateConnection(err) => Some(err),
-//             _ => None,
-//         }
-//     }
-// }
 
 impl From<EspIOError> for Error {
     fn from(other: EspIOError) -> Error {

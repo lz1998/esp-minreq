@@ -8,13 +8,16 @@ edition = "2021"
 default = ["no_std"]
 
 no_std = []
+json = ["serde", "serde_json"]
 
 [dependencies]
 log = { version = "0.4", default-features = false }
 esp-idf-sys = { version = "0.33", default-features = false }
-esp-idf-hal = { version = "0.42", default-features = false}
+esp-idf-hal = { version = "0.42", default-features = false }
 embedded-io-async = { version = "0.6.0", default-features = false }
 esp-idf-svc = { version = "0.47", default-features = false }
+serde = { version = "1", default-features = false, optional = true }
+serde_json = { version = "1", default-features = false, optional = true, features = ["alloc"] }
 
 [build-dependencies]
 embuild = "0.31.0"

@@ -24,7 +24,7 @@ jobs:
           - command: fmt
             args: --all -- --check --color always
           - command: clippy
-            args: --workspace -- -D warnings
+            args: --workspace --all-features -- -D warnings
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
