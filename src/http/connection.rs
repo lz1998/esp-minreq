@@ -19,8 +19,8 @@ impl Connection {
         Connection { request }
     }
     pub(crate) async fn send<C: HttpConnect>(self) -> Result<ResponseLazy<BufReader<C>>, Error>
-        where
-            Error: From<C::Error>,
+    where
+        Error: From<C::Error>,
     {
         let (mut conn, mut response) = self.send_::<C>().await?;
         let mut next_hop =
@@ -43,8 +43,8 @@ impl Connection {
     pub(crate) async fn send_<C: HttpConnect>(
         mut self,
     ) -> Result<(Self, ResponseLazy<BufReader<C>>), Error>
-        where
-            Error: From<C::Error>,
+    where
+        Error: From<C::Error>,
     {
         self.request.url.host = ensure_ascii_host(self.request.url.host)?;
         let bytes = self.request.as_bytes();
@@ -63,7 +63,7 @@ impl Connection {
             self.request.config.max_headers_size,
             self.request.config.max_status_line_len,
         )
-            .await?;
+        .await?;
         Ok((self, response))
     }
 

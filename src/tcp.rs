@@ -35,7 +35,7 @@ impl HttpConnect for HttpStream {
                     other => Poll::Ready(other),
                 }
             })
-                .await
+            .await
         };
         match result {
             1 => Ok(conn),
@@ -72,7 +72,7 @@ impl HttpStream {
                     other => Poll::Ready(other),
                 }
             })
-                .await
+            .await
         };
         match result {
             1 => Ok(conn),
@@ -96,7 +96,7 @@ impl embedded_io_async::Read for HttpStream {
                 code => Poll::Ready(code),
             }
         })
-            .await;
+        .await;
         match EspError::from(result) {
             Some(err) if result < 0 => Err(EspIOError(err)),
             _ => Ok(result as _),
@@ -114,7 +114,7 @@ impl embedded_io_async::Write for HttpStream {
                 code => Poll::Ready(code),
             }
         })
-            .await;
+        .await;
         match EspError::from(result) {
             Some(err) if result < 0 => Err(EspIOError(err)),
             _ => Ok(result as _),
