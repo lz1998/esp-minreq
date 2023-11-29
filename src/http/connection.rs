@@ -4,10 +4,7 @@ use crate::http::{Error, Method, ResponseLazy};
 use alloc::string::String;
 use esp_idf_hal::io::EspIOError;
 
-// use std::io::{self, BufReader, BufWriter, Read, Write};
-// use std::net::{TcpStream, ToSocketAddrs};
-// use std::time::{Duration, Instant};
-use crate::tcp::TcpConnect;
+use crate::tcp::HttpConnect;
 
 /// A connection to the server for sending
 /// [`Request`](struct.Request.html)s.
@@ -21,9 +18,9 @@ impl Connection {
     pub(crate) fn new(request: ParsedRequest) -> Connection {
         Connection { request }
     }
-    pub(crate) async fn send<C: TcpConnect>(self) -> Result<ResponseLazy<BufReader<C>>, Error>
-    where
-        Error: From<C::Error>,
+    pub(crate) async fn send<C: HttpConnect>(self) -> Result<ResponseLazy<BufReader<C>>, Error>
+        where
+            Error: From<C::Error>,
     {
         let (mut conn, mut response) = self.send_::<C>().await?;
         let mut next_hop =
@@ -43,11 +40,11 @@ impl Connection {
     }
     /// Sends the [`Request`](struct.Request.html), consumes this
     /// connection, and returns a [`Response`](struct.Response.html).
-    pub(crate) async fn send_<C: TcpConnect>(
+    pub(crate) async fn send_<C: HttpConnect>(
         mut self,
     ) -> Result<(Self, ResponseLazy<BufReader<C>>), Error>
-    where
-        Error: From<C::Error>,
+        where
+            Error: From<C::Error>,
     {
         self.request.url.host = ensure_ascii_host(self.request.url.host)?;
         let bytes = self.request.as_bytes();
@@ -66,11 +63,11 @@ impl Connection {
             self.request.config.max_headers_size,
             self.request.config.max_status_line_len,
         )
-        .await?;
+            .await?;
         Ok((self, response))
     }
 
-    async fn connect<C: TcpConnect>(&self) -> Result<C, Error> {
+    async fn connect<C: HttpConnect>(&self) -> Result<C, Error> {
         #[cfg(feature = "proxy")]
         match self.request.config.proxy {
             Some(ref proxy) => {
@@ -104,29 +101,6 @@ impl Connection {
             .map_err(|e| Error::IoError(EspIOError(e)))
     }
 }
-
-// async fn handle_redirects<C: TcpConnect>(
-//     connection: Connection,
-//     mut response: ResponseLazy<C>,
-// ) -> Result<ResponseLazy<C>, Error>
-// where
-//     C::Error: Into<Error>,
-// {
-//     let status_code = response.status_code;
-//     let url = response.headers.get("location");
-//     match get_redirect(connection, status_code, url) {
-//         NextHop::Redirect(connection) => {
-//             let connection = connection?;
-//             connection.send_().await
-//         }
-//         NextHop::Destination(connection) => {
-//             let dst_url = connection.request.url;
-//             dst_url.write_base_url_to(&mut response.url).unwrap();
-//             dst_url.write_resource_to(&mut response.url).unwrap();
-//             Ok(response)
-//         }
-//     }
-// }
 
 enum NextHop {
     Redirect(Result<Connection, Error>),

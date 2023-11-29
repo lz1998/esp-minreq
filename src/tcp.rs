@@ -4,14 +4,13 @@ use embedded_io_async::{ErrorType, Read, Write};
 use esp_idf_hal::io::EspIOError;
 use esp_idf_sys::EspError;
 
-pub struct TcpStream(*mut esp_idf_sys::esp_tls);
-
-pub trait TcpConnect: Read + Write + Sized {
+pub trait HttpConnect: Read + Write + Sized {
     async fn connect_http(url: &str, is_plain_tcp: bool) -> Result<Self, EspError>;
-    async fn connect(host_name: &str, port: u16, is_plain_tcp: bool) -> Result<Self, EspError>;
 }
 
-impl TcpConnect for TcpStream {
+pub struct HttpStream(*mut esp_idf_sys::esp_tls);
+
+impl HttpConnect for HttpStream {
     async fn connect_http(url: &str, is_plain_tcp: bool) -> Result<Self, EspError> {
         let conn = Self(unsafe { esp_idf_sys::esp_tls_init() });
         let result = {
@@ -36,15 +35,18 @@ impl TcpConnect for TcpStream {
                     other => Poll::Ready(other),
                 }
             })
-            .await
+                .await
         };
         match result {
             1 => Ok(conn),
             other => Err(EspError::from(other).unwrap()),
         }
     }
+}
 
-    async fn connect(host_name: &str, port: u16, is_plain_tcp: bool) -> Result<Self, EspError> {
+impl HttpStream {
+    // It can be used as TcpStream.
+    pub async fn connect(host_name: &str, port: u16, is_plain_tcp: bool) -> Result<Self, EspError> {
         let conn = Self(unsafe { esp_idf_sys::esp_tls_init() });
         let result = {
             let tls = conn.0;
@@ -70,7 +72,7 @@ impl TcpConnect for TcpStream {
                     other => Poll::Ready(other),
                 }
             })
-            .await
+                .await
         };
         match result {
             1 => Ok(conn),
@@ -79,11 +81,11 @@ impl TcpConnect for TcpStream {
     }
 }
 
-impl ErrorType for TcpStream {
+impl ErrorType for HttpStream {
     type Error = EspIOError;
 }
 
-impl embedded_io_async::Read for TcpStream {
+impl embedded_io_async::Read for HttpStream {
     async fn read(&mut self, buf: &mut [u8]) -> Result<usize, Self::Error> {
         let result = core::future::poll_fn(|_ctx| {
             match unsafe {
@@ -94,7 +96,7 @@ impl embedded_io_async::Read for TcpStream {
                 code => Poll::Ready(code),
             }
         })
-        .await;
+            .await;
         match EspError::from(result) {
             Some(err) if result < 0 => Err(EspIOError(err)),
             _ => Ok(result as _),
@@ -102,7 +104,7 @@ impl embedded_io_async::Read for TcpStream {
     }
 }
 
-impl embedded_io_async::Write for TcpStream {
+impl embedded_io_async::Write for HttpStream {
     async fn write(&mut self, buf: &[u8]) -> Result<usize, Self::Error> {
         let result = core::future::poll_fn(|_ctx| {
             match unsafe { esp_idf_sys::esp_tls_conn_write(self.0, buf.as_ptr() as _, buf.len()) }
@@ -112,7 +114,7 @@ impl embedded_io_async::Write for TcpStream {
                 code => Poll::Ready(code),
             }
         })
-        .await;
+            .await;
         match EspError::from(result) {
             Some(err) if result < 0 => Err(EspIOError(err)),
             _ => Ok(result as _),
@@ -120,7 +122,7 @@ impl embedded_io_async::Write for TcpStream {
     }
 }
 
-impl Drop for TcpStream {
+impl Drop for HttpStream {
     fn drop(&mut self) {
         unsafe {
             esp_idf_sys::esp_tls_conn_destroy(self.0);

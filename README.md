@@ -1,8 +1,8 @@
-# esp32-minreq
+# esp-minreq
 Async HTTP Client
 
 ```toml
-esp32-minreq = { git = "https://github.com/lz1998/esp32-minreq.git", branch = "main", features = ["json"] }
+esp-minreq = { git = "https://github.com/lz1998/esp-minreq.git", branch = "main", features = ["json"] }
 ```
 
 ```rust
@@ -24,8 +24,8 @@ esp32-minreq = { git = "https://github.com/lz1998/esp32-minreq.git", branch = "m
         pub asn: String,
         pub asn_org: String,
     }
-    let resp: Response = esp32_minreq::get("https://ifconfig.co/json")
-        .send::<esp32_minreq::tcp::TcpStream>()
+    let resp: Response = esp_minreq::get("https://ifconfig.co/json")
+        .send::<esp_minreq::tcp::HttpStream>()
         .await
         .unwrap()
         .json()

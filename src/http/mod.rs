@@ -69,8 +69,8 @@
 //! or something could go wrong during the download.
 //!
 //! ```
-//! # async fn main() -> Result<(), esp32_minreq::Error> {
-//! let response = esp32_minreq::get("http://example.com").send().await?;
+//! # async fn main() -> Result<(), esp_minreq::Error> {
+//! let response = esp_minreq::get("http://example.com").send().await?;
 //! assert!(response.as_str()?.contains("</html>"));
 //! assert_eq!(200, response.status_code);
 //! assert_eq!("OK", response.reason_phrase);
@@ -87,8 +87,8 @@
 //! `send()`.
 //!
 //! ```
-//! # fn main() -> Result<(), esp32_minreq::Error>  {
-//! let response = esp32_minreq::post("http://example.com")
+//! # fn main() -> Result<(), esp_minreq::Error>  {
+//! let response = esp_minreq::post("http://example.com")
 //!     .with_body("Foobar")
 //!     .send()?;
 //! # Ok(()) }
@@ -100,8 +100,8 @@
 //! `send()`.
 //!
 //! ```
-//! # fn main() -> Result<(), esp32_minreq::Error> {
-//! let response = esp32_minreq::get("http://example.com")
+//! # fn main() -> Result<(), esp_minreq::Error> {
+//! let response = esp_minreq::get("http://example.com")
 //!     .with_header("Accept", "text/html")
 //!     .send()?;
 //! # Ok(()) }
@@ -117,8 +117,8 @@
 //! this unifies the casings for easier `get()`ing.
 //!
 //! ```
-//! # fn main() -> Result<(), esp32_minreq::Error> {
-//! let response = esp32_minreq::get("http://example.com").send()?;
+//! # fn main() -> Result<(), esp_minreq::Error> {
+//! let response = esp_minreq::get("http://example.com").send()?;
 //! assert!(response.headers.get("content-type").unwrap().starts_with("text/html"));
 //! # Ok(()) }
 //! ```
@@ -133,11 +133,11 @@
 //! supported at this time.
 //!
 //! ```no_run
-//! # fn main() -> Result<(), esp32_minreq::Error> {
+//! # fn main() -> Result<(), esp_minreq::Error> {
 //! #[cfg(feature = "proxy")]
 //! {
-//!     let proxy = esp32_minreq::Proxy::new("localhost:8080")?;
-//!     let response = esp32_minreq::post("http://example.com")
+//!     let proxy = esp_minreq::Proxy::new("localhost:8080")?;
+//!     let response = esp_minreq::post("http://example.com")
 //!         .with_proxy(proxy)
 //!         .send()?;
 //!     println!("{}", response.as_str()?);

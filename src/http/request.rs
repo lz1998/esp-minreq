@@ -4,7 +4,7 @@ use crate::http::http_url::{HttpUrl, Port};
 use crate::http::{Error, Response, ResponseLazy};
 #[cfg(feature = "proxy")]
 use crate::proxy::Proxy;
-use crate::tcp::TcpConnect;
+use crate::tcp::HttpConnect;
 use alloc::collections::btree_map::BTreeMap as HashMap;
 use alloc::fmt;
 use alloc::fmt::Write;
@@ -62,13 +62,13 @@ impl fmt::Display for Method {
 
 /// An HTTP request.
 ///
-/// Generally created by the [`esp32_minreq::get`](fn.get.html)-style
+/// Generally created by the [`esp_minreq::get`](fn.get.html)-style
 /// functions, corresponding to the HTTP method we want to use.
 ///
 /// # Example
 ///
 /// ```
-/// let request = esp32_minreq::post("http://example.com");
+/// let request = esp_minreq::post("http://example.com");
 /// ```
 ///
 /// After creating the request, you would generally call
@@ -245,10 +245,10 @@ impl Request {
     /// Returns `Err` if we run into an error while sending the
     /// request, or receiving/parsing the response. The specific error
     /// is described in the `Err`, and it can be any
-    /// [`esp32_minreq::Error`](enum.Error.html) except
+    /// [`esp_minreq::Error`](enum.Error.html) except
     /// [`SerdeJsonError`](enum.Error.html#variant.SerdeJsonError) and
     /// [`InvalidUtf8InBody`](enum.Error.html#variant.InvalidUtf8InBody).
-    pub async fn send<C: TcpConnect>(self) -> Result<Response, Error>
+    pub async fn send<C: HttpConnect>(self) -> Result<Response, Error>
     where
         Error: From<C::Error>,
     {
@@ -263,7 +263,7 @@ impl Request {
     /// # Errors
     ///
     /// See [`send`](struct.Request.html#method.send).
-    pub async fn send_lazy<C: TcpConnect>(self) -> Result<ResponseLazy<BufReader<C>>, Error>
+    pub async fn send_lazy<C: HttpConnect>(self) -> Result<ResponseLazy<BufReader<C>>, Error>
     where
         Error: From<C::Error>,
     {

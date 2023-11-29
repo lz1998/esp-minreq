@@ -53,8 +53,8 @@ impl Proxy {
     /// # Example
     ///
     /// ```
-    /// let proxy = esp32_minreq::Proxy::new("user:password@localhost:1080").unwrap();
-    /// let request = esp32_minreq::post("http://example.com").with_proxy(proxy);
+    /// let proxy = esp_minreq::Proxy::new("user:password@localhost:1080").unwrap();
+    /// let request = esp_minreq::post("http://example.com").with_proxy(proxy);
     /// ```
     ///
     pub fn new<S: AsRef<str>>(proxy: S) -> Result<Self, Error> {

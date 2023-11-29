@@ -18,8 +18,8 @@ const MAX_CONTENT_LENGTH: usize = 16 * 1024;
 /// # Example
 ///
 /// ```no_run
-/// # async fn main() -> Result<(), esp32_minreq::Error> {
-/// let response = esp32_minreq::get("http://example.com").send().await?;
+/// # async fn main() -> Result<(), esp_minreq::Error> {
+/// let response = esp_minreq::get("http://example.com").send().await?;
 /// println!("{}", response.as_str()?);
 /// # Ok(()) }
 /// ```
@@ -91,9 +91,9 @@ impl Response {
     /// # Example
     ///
     /// ```no_run
-    /// # async fn main() -> Result<(), esp32_minreq::Error> {
+    /// # async fn main() -> Result<(), esp_minreq::Error> {
     /// # let url = "http://example.org/";
-    /// let response = esp32_minreq::get(url).send().await?;
+    /// let response = esp_minreq::get(url).send().await?;
     /// println!("{}", response.as_str()?);
     /// # Ok(())
     /// # }
@@ -112,9 +112,9 @@ impl Response {
     /// # Example
     ///
     /// ```no_run
-    /// # async fn main() -> Result<(), esp32_minreq::Error> {
+    /// # async fn main() -> Result<(), esp_minreq::Error> {
     /// # let url = "http://example.org/";
-    /// let response = esp32_minreq::get(url).send().await?;
+    /// let response = esp_minreq::get(url).send().await?;
     /// println!("{:?}", response.as_bytes());
     /// # Ok(())
     /// # }
@@ -130,9 +130,9 @@ impl Response {
     /// # Example
     ///
     /// ```no_run
-    /// # async fn main() -> Result<(), esp32_minreq::Error> {
+    /// # async fn main() -> Result<(), esp_minreq::Error> {
     /// # let url = "http://example.org/";
-    /// let response = esp32_minreq::get(url).send().await?;
+    /// let response = esp_minreq::get(url).send().await?;
     /// println!("{:?}", response.into_bytes());
     /// // This would error, as into_bytes consumes the Response:
     /// // let x = response.status_code;
@@ -177,10 +177,10 @@ impl Response {
     ///     pub asn_org: String,
     /// }
     ///
-    /// # async fn main() -> Result<(), esp32_minreq::Error> {
+    /// # async fn main() -> Result<(), esp_minreq::Error> {
     /// # let url_to_json_resource = "https://ifconfig.co/json";
     /// // Value could be any type that implements Deserialize!
-    /// let response = esp32_minreq::get(url_to_json_resource).send().await?.json::<Response>()?;
+    /// let response = esp_minreq::get(url_to_json_resource).send().await?.json::<Response>()?;
     /// println!("User ip is '{}'", response.ip);
     /// # Ok(())
     /// # }
@@ -211,7 +211,7 @@ impl Response {
 ///
 /// In practice, "lazy loading" means that the bytes are only loaded
 /// as you iterate through them. The bytes are provided in the form of
-/// a `Result<(u8, usize), esp32_minreq::Error>`, as the reading operation
+/// a `Result<(u8, usize), esp_minreq::Error>`, as the reading operation
 /// can fail in various ways. The `u8` is the actual byte that was
 /// read, and `usize` is how many bytes we are expecting to read in
 /// the future (including this byte). Note, however, that the `usize`
@@ -225,8 +225,8 @@ impl Response {
 /// ```no_run
 /// // This is how the normal Response works behind the scenes, and
 /// // how you might use ResponseLazy.
-/// # async fn main() -> Result<(), esp32_minreq::Error> {
-/// let response = esp32_minreq::get("http://example.com").send_lazy().await?;
+/// # async fn main() -> Result<(), esp_minreq::Error> {
+/// let response = esp_minreq::get("http://example.com").send_lazy().await?;
 /// let mut vec = Vec::new();
 /// for result in response {
 ///     let (byte, length) = result?;
